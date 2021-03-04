@@ -1,6 +1,6 @@
-setup
-  @if [ ! -f .env ]; then cp .env.mock .env; fi
+setup:
+	@if [ ! -f .env ]; then cp .env.mock .env; fi
 
-install
+install:
 	pip install -r requirements.txt;
 	

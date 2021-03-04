@@ -15,7 +15,7 @@ try:
     #    Can only connect over HTTPS with HTTPS server
     #    Server supports passing username and password
     s = xmlrpc.client.ServerProxy(url, context=ssl._create_unverified_context())
-    student = s.get_student(3)
+    student = s.add('x', 1)
     print(student)
 except Exception as e:
     print(e)

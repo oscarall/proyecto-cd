@@ -26,7 +26,7 @@ mydb = mysql.connector.connect(
     database=os.getenv('DATABASE', '')
 )
 
-USER = os.getenv('USER')
+USER = 'test'
 PASSWORD = os.environ.get('PASSWORD')
 SERVER_HOST = os.getenv("SERVER_HOST", 'localhost')
 
