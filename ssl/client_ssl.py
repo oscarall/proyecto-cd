@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-USER = os.getenv('USER')
+USER = os.getenv('SSL_NAME')
 PASSWORD = os.environ.get('PASSWORD')
 SERVER_HOST = os.getenv("SERVER_HOST", 'localhost')
 url = f'https://{USER}:{PASSWORD}@{SERVER_HOST}:443'
