@@ -17,10 +17,9 @@ except ImportError:
 load_dotenv()
 
 HOST = os.getenv("SERVER_HOST", 'localhost')
-PORT = int(os.getenv("SOCKET_PORT", 3000))
 
-USER = os.getenv("SSL_NAME")
-PASSWORD = os.getenv('PASSWORD')
+USER = "test"
+PASSWORD = "test"
 KEYFILE = 'sockets/privatekey.pem'    # Replace with your PEM formatted key file
 CERTFILE = 'sockets/cert.pem'  # Replace with your PEM formatted certificate
 userPassDict = {USER: PASSWORD}
@@ -90,9 +89,7 @@ def start_rpc_server(lamport_handler):
             payload = {
                 "target": target,
                 "value": value,
-                "action": "ADD",
-                "sender": ID,
-                "time": TIME
+                "action": "ADD"
             }
             lamport_handler.request_mutual_exclusion(payload)
 
@@ -100,9 +97,7 @@ def start_rpc_server(lamport_handler):
             payload = {
                 "target": target,
                 "value": value,
-                "action": "MULTIPLY",
-                "sender": ID,
-                "time": TIME
+                "action": "MULTIPLY"
             }
             lamport_handler.request_mutual_exclusion(payload)
         

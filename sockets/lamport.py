@@ -3,14 +3,14 @@ import json
 
 class LamportHandler:
 
-    def __init__(self, nodes, id, action_handler):
+    def __init__(self, nodes, id):
         self.nodes = [Node(ip, port) for ip, port in nodes.items()]
         self.requests = []
         self.id = id
         self.reply_table = {}
         self.reset_reply_table()
         self.values = {
-            "x": 0
+            "x": 0,
             "y": 0
         }
         self.time = 0
@@ -18,18 +18,23 @@ class LamportHandler:
     def reset_reply_table(self):
         for node in self.nodes:
             node_id = node.ip.split('.')[3]
-            reply_table[node_id] = 0
+            self.reply_table[node_id] = 0
 
     def request_mutual_exclusion(self, req):
+        self.increment_timer()
+        req["time"] = self.time
         req["sender"] = self.id
         self.requests.append(req)
-        self.broadcast(request)
+        print(self.requests)
+        self.broadcast(req)
 
     def broadcast(self, msg):
         for node in self.nodes:
-            node.send_message(self, json.dumps(msg))
+            node.send_message(json.dumps(msg))
 
     def external_request(self, req):
+        time = req.get("time")
+        time = max(time, TIME) + 1
         id = req["sender"]
         node = get_node(id)
         
@@ -48,29 +53,34 @@ class LamportHandler:
         
         return None
 
-    def reply(self, ip):
-        id = ip.split('.')[3]
+    def reply(self, id):
         self.reply_table[id] = 1
+        print(self.reply_table)
         self.check_critic_section()
     
     def check_critic_section(self):
-        for id, reply in self.reply_table:
+        for id, reply in self.reply_table.items():
             if reply == 0:
                 return
         
-        if requests[0]["id"] == self.id:
-            critic_section()
+        if self.requests[0]["sender"] == self.id:
+            self.critic_section()
+            self.release()
 
     def critic_section(self):
-        request = requests.pop(0)
+        print("In the critic section")
+        request = self.requests.pop(0)
         action = request["action"].upper()
         value = int(request["value"])
         target = request["target"]
 
+        print(f"Applying {action} to {target} value {value}")
+
         if (action == "ADD"):
-            response = self.action_handler.add_value(value, target)
+            response = self.add(target, value)
         elif (action == "MULTIPLY"):
-            response = self.action_handler.multiply_value(value, target)
+            response = self.multiply(target, value)
+
 
     def release_request(self, release):
         id = release["id"]
@@ -89,15 +99,12 @@ class LamportHandler:
         self.time += 1
 
     def add(self, target, value):
-        self.increment_timer()
         self.values[target.lower()] = self.values[target.lower()] + value
 
     def multiply(self, target, value):
-        self.increment_timer()
         self.values[target.lower()] = self.values[target.lower()] * value
     
-    def get(self, target)
-        self.increment_timer()
+    def get(self, target):
         return self.values[target.lower()]
 
 class Node:

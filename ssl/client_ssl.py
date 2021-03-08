@@ -9,13 +9,13 @@ load_dotenv()
 USER = os.getenv('SSL_NAME')
 PASSWORD = os.environ.get('PASSWORD')
 SERVER_HOST = os.getenv("SERVER_HOST", 'localhost')
-url = f'https://{USER}:{PASSWORD}@{SERVER_HOST}:443'
+url = f'https://test:test@{SERVER_HOST}:443'
 try:
     #    Connects to server
     #    Can only connect over HTTPS with HTTPS server
     #    Server supports passing username and password
     s = xmlrpc.client.ServerProxy(url, context=ssl._create_unverified_context())
-    student = s.add('x', 1)
+    student = s.get('x')
     print(student)
 except Exception as e:
     print(e)

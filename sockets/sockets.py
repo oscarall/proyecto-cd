@@ -1,9 +1,12 @@
 import socket
-import jsons
+import json
+import os
 
+HOST = os.getenv("SERVER_HOST", 'localhost')
+PORT = int(os.getenv("SOCKET_PORT", 3000))
 
 def start_socket(lamport_handler):
-    TIME = 0
+    print("Starting socket")
     try:
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.bind((HOST, PORT))
@@ -15,12 +18,12 @@ def start_socket(lamport_handler):
             
             action = msg.get("action", None)
             if action:
-                TIME = max(time, TIME) + 1
                 lamport_handler.external_request(msg)
             
             reply = msg.get("reply")
             if reply:
-                lamport_handler.reply()
+                id = msg.get("id")
+                lamport_handler.reply(id)
             
             release = msg.get("release", None)
             if release:
