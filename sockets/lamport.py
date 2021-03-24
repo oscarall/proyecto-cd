@@ -33,16 +33,16 @@ class LamportHandler:
             node.send_message(json.dumps(msg))
 
     def external_request(self, req):
-        time = req.get("time")
-        time = max(time, TIME) + 1
+        time = int(req.get("time"))
+        self.time = max(time, self.time) + 1
         id = req["sender"]
-        node = get_node(id)
+        node = self.get_node(id)
         
         if not node:
             print(f"Invalid node {id}")
         
         self.requests.append(req)
-        msg = {"reply":"reply", "id": self.id}
+        msg = {"reply":"reply", "id": self.id, "time": self.time}
         node.send_message(json.dumps(msg))
 
 
@@ -83,6 +83,7 @@ class LamportHandler:
 
 
     def release_request(self, release):
+        print("Got release")
         id = release["id"]
 
         if id == self.requests[0]["sender"]:
@@ -91,8 +92,8 @@ class LamportHandler:
         self.check_critic_section()
     
     def release(self):
-        msg = {"release":"release", "id": self.id}
-        self.broadcast(json.dumps(msg))
+        msg = {"release":"release", "id": self.id, "time": self.time}
+        self.broadcast(msg)
         self.reset_reply_table()
 
     def increment_timer(self):

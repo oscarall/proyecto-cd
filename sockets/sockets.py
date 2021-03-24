@@ -9,13 +9,14 @@ def start_socket(lamport_handler):
     print("Starting socket")
     try:
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        soc.bind((HOST, PORT))
+        soc.bind((HOST, 3000))
         soc.listen(5)
         while True:
             conn, addr = soc.accept()
             print ("Got connection from", addr)
-            msg = json.loads(conn.recv(1024).decode('utf-8'))
-            
+            a = conn.recv(1024).decode('utf-8')
+            print(a)
+            msg = json.loads(a)
             action = msg.get("action", None)
             if action:
                 lamport_handler.external_request(msg)

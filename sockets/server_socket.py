@@ -6,7 +6,8 @@ from multiprocessing import Process
 import os
 
 nodes = {
-    "148.205.36.203": 1026
+    "148.205.36.206": 5056,
+    #"148.205.36.205": 5000
 }
 
 def LamportHandlerProxy():
