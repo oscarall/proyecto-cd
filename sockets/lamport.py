@@ -1,19 +1,18 @@
 import socket
 import json
 
+from log import Log
+
 class LamportHandler:
 
-    def __init__(self, nodes, id):
+    def __init__(self, nodes, id, log: Log):
         self.nodes = [Node(ip, port) for ip, port in nodes.items()]
         self.requests = []
         self.id = id
         self.reply_table = {}
         self.reset_reply_table()
-        self.values = {
-            "x": 0,
-            "y": 0
-        }
         self.time = 0
+        self.log = log
         
     def reset_reply_table(self):
         for node in self.nodes:
@@ -70,17 +69,7 @@ class LamportHandler:
     def critic_section(self):
         print("In the critic section")
         request = self.requests.pop(0)
-        action = request["action"].upper()
-        value = int(request["value"])
-        target = request["target"]
-
-        print(f"Applying {action} to {target} value {value}")
-
-        if (action == "ADD"):
-            response = self.add(target, value)
-        elif (action == "MULTIPLY"):
-            response = self.multiply(target, value)
-
+        self.log.write(request)
 
     def release_request(self, release):
         print("Got release")
@@ -98,15 +87,6 @@ class LamportHandler:
 
     def increment_timer(self):
         self.time += 1
-
-    def add(self, target, value):
-        self.values[target.lower()] = self.values[target.lower()] + value
-
-    def multiply(self, target, value):
-        self.values[target.lower()] = self.values[target.lower()] * value
-    
-    def get(self, target):
-        return self.values[target.lower()]
 
 class Node:
     def __init__(self, ip, port):

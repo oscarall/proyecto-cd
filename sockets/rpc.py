@@ -79,7 +79,7 @@ class SimpleXMLRPCServerTLS(SimpleXMLRPCServer):
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/RPC2',)
 
-def start_rpc_server(lamport_handler):
+def start_rpc_server(lamport_handler, operation_handler):
     server = SimpleXMLRPCServerTLS(
         (HOST, 443), requestHandler=RequestHandler)
     server.register_introspection_functions()
@@ -102,7 +102,7 @@ def start_rpc_server(lamport_handler):
             lamport_handler.request_mutual_exclusion(payload)
         
         def get(self, target):
-            return lamport_handler.get(target)
+            return operation_handler.get(target)
 
 
     server.register_instance(MyFuncs())
